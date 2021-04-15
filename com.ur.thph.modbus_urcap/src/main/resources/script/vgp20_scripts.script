@@ -1,15 +1,12 @@
-	#modbus_add_signal RTU 
-	modbus_xmlrpc = rpc_factory("xmlrpc", "http://127.0.0.1:40408/RPC2")
-
 
 	#const
 	vgp20_chs = 4
     chs = vgp20_chs
     valve_activation_current = 0.03
-	quiescent_current = 0.255 -	#including 3 valve activation
+	quiescent_current = 0.255 # -including 3 valve activation
 	headroom_current_list = [0, 	1.1-quiescent_current,  	1.25-quiescent_current,  1.3-quiescent_current,  1.4-quiescent_current, 1.7-quiescent_current,  1.95-quiescent_current, 1.95-quiescent_current]
 	pressure_step_list = 	[0,	6,						10, 					12, 					15, 					20, 					30, 					60]
-	vgp20_max_tool_current = 2.0
+
     vgp20_leak_timeout = 500	#[syncs]
     
 

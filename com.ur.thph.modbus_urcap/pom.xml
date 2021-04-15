@@ -17,8 +17,8 @@
 		<!--********************************************************************-->
 		<!--******************* BEGINNING OF URCAP META DATA *******************-->
 		<urcap.symbolicname>com.ur.thph.modbus_urcap</urcap.symbolicname>
-		<urcap.vendor>URCaps R us Inc.</urcap.vendor>
-		<urcap.contactAddress>123 URCap Street</urcap.contactAddress>
+		<urcap.vendor>URPlus Support Team</urcap.vendor>
+		<urcap.contactAddress>1234 URCap Street</urcap.contactAddress>
 		<urcap.copyright>Copyright notice (C)</urcap.copyright>
 		<urcap.description>This is a description of the URCap</urcap.description>
 		<urcap.licenseType>License type</urcap.licenseType>

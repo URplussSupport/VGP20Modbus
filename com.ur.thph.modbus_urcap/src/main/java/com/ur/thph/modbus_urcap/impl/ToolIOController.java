@@ -33,13 +33,13 @@ class ToolIOController implements ToolIOInterfaceController {
 	
 	private static final BaudRate REQUIRED_BAUDRATE = BaudRate.BAUD_1M; 
 	private static final BaudRate SHUTDOWN_BAUDRATE = BaudRate.BAUD_1M;
-	private static final Parity REQUIRED_PARITY = Parity.ODD;
+	private static final Parity REQUIRED_PARITY = Parity.EVEN;
 	private static final Parity SHUTDOWN_PARITY = Parity.NONE;
-	private static final StopBits REQUIRED_STOPBITS = StopBits.TWO;
+	private static final StopBits REQUIRED_STOPBITS = StopBits.ONE;
 	private static final StopBits SHUTDOWN_STOPBITS = StopBits.ONE;
-	private static final double REQUIRED_RXIDLE = 5.0;
+	private static final double REQUIRED_RXIDLE = 1.5;
 	private static final double SHUTDOWN_RXIDLE = 1.5;
-	private static final double REQUIRED_TXIDLE = 5.5;
+	private static final double REQUIRED_TXIDLE = 3.5;
 	private static final double SHUTDOWN_TXIDLE = 3.5;
 	private static final OutputMode REQUIRED_DIGITAL_OUTPUT_0 = OutputMode.SOURCING_PNP;
 	private static final OutputMode SHUTDOWN_DIGITAL_OUTPUT_0 = OutputMode.SINKING_NPN;
@@ -114,8 +114,9 @@ class ToolIOController implements ToolIOInterfaceController {
 
 	private void controlToolOutput(OutputMode digitalOutput0, OutputMode digitalOutput1) {
 		DigitalOutputModeConfigFactory factory = controllableInstance.getDigitalOutputModeConfigFactory();
-		StandardDigitalOutputModeConfig config = factory.createStandardDigitalOutputModeConfig(digitalOutput0, digitalOutput1);
-		controllableInstance.setDigitalOutputModeConfig(config);
+		DigitalOutputModeConfig configDoubleMode = factory.createDualPinPowerModeConfig();
+		//StandardDigitalOutputModeConfig config = factory.createStandardDigitalOutputModeConfig(digitalOutput0, digitalOutput1);
+		controllableInstance.setDigitalOutputModeConfig(configDoubleMode);
 	}
 
 	private void controlTCI(BaudRate baudrate, Parity parity, StopBits stopbits, double rxidle, double txidle) {
@@ -172,7 +173,7 @@ class ToolIOController implements ToolIOInterfaceController {
 		if(toolInputModeConfig.getConfigType() != TOOL_COMMUNICATION_INTERFACE) {
 			return false;
 		}
-
+		
 		CommunicationInterfaceConfig toolCommunicationInterfaceConfig = ((CommunicationInterfaceConfig) toolInputModeConfig);
 		return toolCommunicationInterfaceConfig.getBaudRate() == REQUIRED_BAUDRATE
 				&& toolCommunicationInterfaceConfig.getParity() == REQUIRED_PARITY

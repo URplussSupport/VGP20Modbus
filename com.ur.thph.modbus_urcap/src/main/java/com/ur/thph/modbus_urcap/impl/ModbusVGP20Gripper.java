@@ -3,6 +3,7 @@ package com.ur.thph.modbus_urcap.impl;
 import com.ur.urcap.api.contribution.DaemonContribution;
 import com.ur.urcap.api.contribution.driver.general.tcp.TCPConfiguration;
 import com.ur.urcap.api.contribution.driver.general.userinput.CustomUserInputConfiguration;
+import com.ur.urcap.api.contribution.driver.general.userinput.TextComponent;
 import com.ur.urcap.api.contribution.driver.general.userinput.ValueChangedListener;
 import com.ur.urcap.api.contribution.driver.general.userinput.selectableinput.BooleanUserInput;
 
@@ -28,6 +29,7 @@ import com.ur.urcap.api.domain.value.simple.Angle;
 import com.ur.urcap.api.domain.value.simple.Length;
 import com.ur.urcap.api.domain.value.simple.Pressure;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import java.util.Locale;
 import java.util.Timer;
@@ -73,17 +75,21 @@ public class ModbusVGP20Gripper implements GripperContribution {
 	private static final int PORT = 50408;						// Port Changed from 40408 -> to 50408
 	private static final String HOST = "127.0.0.1";
 	
-	private static final String SCRIPT_FILE_PATH = "/script/modbus.script";
+	private static final String SCRIPT_FILE_PATH_MODBUS = "/script/modbus.script";
+	private static final String SCRIPT_FILE_PATH_VGP20 = "/script/vgp20_scripts.script";
+	
+	private String maximumCurrentToolIO = "0.6";  
+	
+	
 	private ScriptHandler handler;
 	
 	private final String DAEMON_STATUS_LABEL = "daemonStatusLabel";
 	private final String DAEMON_STATUS_ID = "startDaemonCheckBox";
 	
-	private RobotType robotType;
 	
 	private ControllableResourceModel resourceModel;
 	private ToolIOController toolIOController ;
-	// TODO:  add ToolIO Control 
+	
 	
 	/*
 	 * 
@@ -92,20 +98,8 @@ public class ModbusVGP20Gripper implements GripperContribution {
 
 	public ModbusVGP20Gripper(ModbusDaemonService modbusDaemonService) {
 		this.modbusDaemonService = modbusDaemonService;
-		this.modbusDaemonInterface = new ModbusDaemonInterface(HOST, PORT);
-		
-		
-		
-		/*this.handler = new ScriptHandler(this.api); 
-		 * 
-		 * API Connection is missing
-		 * The needed api functionality -> Contributing to the function expression editor
-		 * is not available
-		 *
-		 *this.handler.addFunctionModels(SCRIPT_FILE_PATH);
-		 *
-		 */
-		
+		this.modbusDaemonInterface = new ModbusDaemonInterface(HOST, PORT);		
+		this.handler = new ScriptHandler(); 		
 		applyDesiredDaemonStatus();
 	}
 
@@ -116,11 +110,8 @@ public class ModbusVGP20Gripper implements GripperContribution {
 			@Override
 			public void run() {
 				if (isDaemonEnabled().booleanValue()) {
-					// Download the daemon settings to the daemon process on initial start for
-					// real-time preview purposes
 					System.out.println("Starting daemon");
-					try {
-						
+					try {						
 						awaitDaemonRunning(5000);
 						boolean test = modbusDaemonInterface.isReachable();
 						if (test) {
@@ -174,6 +165,10 @@ public class ModbusVGP20Gripper implements GripperContribution {
 
 	@Override
 	public void configureGripper(GripperConfiguration gripperConfiguration, GripperAPIProvider gripperAPIProvider) {
+		/*
+		 * TODO Add the correspondent capabilites to the gripper program node and adjust the needed script code accordingly
+		 */	
+		
 		GripperCapabilities capabilities = gripperConfiguration.getGripperCapabilities();
 		
 		capabilities.registerMultiGripperCapability(new GripperListProvider() {
@@ -199,7 +194,6 @@ public class ModbusVGP20Gripper implements GripperContribution {
 									  GripperAPIProvider gripperAPIProvider) {
 		configureGripperTCPs(systemConfiguration, gripperAPIProvider);
 		customizeInstallationScreen(configurationUIBuilder);
-		
 		configureToolIOResourceModel(systemConfiguration, gripperAPIProvider);
 		
 		
@@ -209,18 +203,65 @@ public class ModbusVGP20Gripper implements GripperContribution {
 	private void configureToolIOResourceModel(SystemConfiguration systemConfiguration, GripperAPIProvider gripperAPIProvider ) {
 		this.resourceModel = systemConfiguration.getControllableResourceModel();
 		this.toolIOController = new ToolIOController(resourceModel, gripperAPIProvider.getSystemAPI().getCapabilityManager());
-		this.resourceModel.requestControl(toolIOController);		
+		this.resourceModel.requestControl(toolIOController);			
+		setMaxCurrentToolIO( getRobotType( gripperAPIProvider ) );
 	}
 
-	private void readRobotType(GripperAPIProvider gripperAPIProvider) {
-		this.robotType = gripperAPIProvider.getSystemAPI().getRobotModel().getRobotType();
+	
+	public boolean getResourceControlStatus() {
+		return this.toolIOController.hasControl();
 	}
 	
-	public RobotType getRobotType() {
-		return this.robotType;
+	private void setMaxCurrentToolIO(RobotType type) {
+		if(type == RobotType.UR3) {
+			this.maximumCurrentToolIO = "0.6";			
+		} else if (type == RobotType.UR5) {
+			this.maximumCurrentToolIO = "1.5";
+		} else if (type == RobotType.UR10 || type == RobotType.UR16 ) {
+			this.maximumCurrentToolIO = "2.0";
+		} else {
+			this.maximumCurrentToolIO = "0.6";
+		}
 	}
+	
+	public String getMaxCurrentToolIO() {
+		return this.maximumCurrentToolIO;
+	}
+	
+	private String toolControlStatusText() {
+		String statusText;
+		if( getResourceControlStatus() ) {
+			statusText = " The VGP20 has control over the Tool Interface!";
+			return statusText;
+		}else {
+			statusText = "The VGP20 does not have control over the Tool Interface!";
+			return statusText;
+		}
+		
+	}
+	
+	private ImageIcon getToolStatusIcon() {		
+		if(getResourceControlStatus()) {
+			return new ImageIcon(getClass().getResource("/logo/approve.png"));
+		} else {
+			return new ImageIcon(getClass().getResource("/logo/warning_icon_small.png"));
+		}
+		
+		
+	}
+	
+	public RobotType getRobotType(GripperAPIProvider gripperAPIProvider) {
+		return gripperAPIProvider.getSystemAPI().getRobotModel().getRobotType();
+	}
+	
+	
 	
 	private void configureGripperTCPs(SystemConfiguration systemConfiguration, GripperAPIProvider gripperAPIProvider) {
+		
+		/*
+		 * TODO Adjust TCP Values accordingly
+		 */		
+		
 		PoseFactory poseFactory = gripperAPIProvider.getPoseFactory();
 
 		TCPConfiguration zoneATCPConfiguration = systemConfiguration.getTCPConfiguration(zoneAGripper);
@@ -241,7 +282,12 @@ public class ModbusVGP20Gripper implements GripperContribution {
 				updateVacuumCapability(useFragileHandling);
 			}
 		});
-		configurationUIBuilder.addText("The Daemon is ",   getDaemonState() +" Perfect!");
+		
+		
+		/*
+		 * TODO Adjust label integration to display the correct value directly after starting the Daemon in the beginning
+		 */		
+		final TextComponent daemonStatusUI = configurationUIBuilder.addText("The Daemon is ",   getDaemonState() +" Perfect!"); 
 		configurationUIBuilder.registerBooleanInput(DAEMON_STATUS_ID, " StartDaemon ", true).setValueChangedListener(
 				new ValueChangedListener<Boolean>() {
 					@Override
@@ -249,9 +295,16 @@ public class ModbusVGP20Gripper implements GripperContribution {
 						if(value == true) {
 							System.out.println("Starting Daemon Again!");
 							applyDesiredDaemonStatus();
+							daemonStatusUI.setText(getDaemonState() +" Perfect!");
 						}						
 					}
 		});;
+		
+		/*
+		 * TODO Probably due to a timing issue showcasing the status of the IO Control leads to a Nullpointer exception
+		 * configurationUIBuilder.addText("Tool Control Status:", getToolStatusIcon(), toolControlStatusText());// -> Throwing Null Pointer!
+		 */
+		
 	}
 
 	// This method updates the parameters of the registered vacuum capability for all individual grippers
@@ -265,20 +318,25 @@ public class ModbusVGP20Gripper implements GripperContribution {
 
 	@Override
 	public void generatePreambleScript(ScriptWriter scriptWriter) {
-		scriptWriter.appendLine("modbus_xmlrpc = rpc_factory(\"xmlrpc\",\"http://127.0.0.1:50408/RPC2\")");
-		scriptWriter.appendLine("isConnected = modbus_xmlrpc.reachable()");		
-		scriptWriter.appendLine("if ( isConnected != True):");
-		scriptWriter.appendLine("    popup(\"Modbus xmlrpc is not available!\")");
-		scriptWriter.appendLine("end");
-				
-				 
+		/*
+		 * TODO The initialization of the Modbus Communication is missing
+		 */
+		scriptWriter.appendLine("vgp20_max_tool_current = " + getMaxCurrentToolIO()); // The maximum current available is dependent on the used robot size
+		
+		String scriptCode_modbus = this.handler.readScriptFile(SCRIPT_FILE_PATH_MODBUS, scriptWriter);
+		String scriptCode_VGP20 = this.handler.readScriptFile(SCRIPT_FILE_PATH_VGP20, scriptWriter);
+		
+		 
 				
 	}
 
 	@Override
 	public void generateGripActionScript(ScriptWriter scriptWriter, GripActionParameters gripActionParameters) {
 		System.out.println("Grip Action :");
-
+		/*
+		 * TODO Define Gripping Action Script Code
+		 * 
+		 * 
 		printFragileHandlingSelection();
 		if (fragileHandlingInput.getValue()){
 			// Simulate applying fragile handling
@@ -296,12 +354,16 @@ public class ModbusVGP20Gripper implements GripperContribution {
 			scriptWriter.appendLine("set_tool_digital_out(0, True)");
 			scriptWriter.appendLine("set_tool_digital_out(1, True)");
 		}
+		*/
 	}
 
 	@Override
 	public void generateReleaseActionScript(ScriptWriter scriptWriter, ReleaseActionParameters releaseActionParameters) {
 		System.out.println("Release Action :");
-
+		/*
+		 * TODO Define Releasing Action Script Code
+		 * 
+		 * 
 		printFragileHandlingSelection();
 		if (fragileHandlingInput.getValue()){
 			// Simulate applying fragile handling
@@ -319,6 +381,7 @@ public class ModbusVGP20Gripper implements GripperContribution {
 			scriptWriter.appendLine("set_tool_digital_out(0, False)");
 			scriptWriter.appendLine("set_tool_digital_out(1, False)");
 		}
+		*/
 	}
 
 	private void printSelectedGripper(SelectableGripper selectedGripper) {
@@ -326,6 +389,11 @@ public class ModbusVGP20Gripper implements GripperContribution {
 	}
 
 	private void printFragileHandlingSelection() {
+		/*
+		 * TODO Is Fragile Handling needed for our cause?
+		 */
+		
+		
 		System.out.println("Using Fragile Handling: " + fragileHandlingInput.getValue());
 	}
 	
