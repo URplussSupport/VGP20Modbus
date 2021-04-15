@@ -48,7 +48,8 @@ thread vgp20_current_thread():
 		sync()
     end    
 end
-    run vgp20_current_thread()
+run vgp20_current_thread()
+tool_modbus_init(65)
     
 	#vgp20 power logic functions
 	#internal functions

@@ -1,9 +1,7 @@
-/home/ur/workspace/Modbus_URCap-main/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/DaemonInstallationNodeService.java
-/home/ur/workspace/Modbus_URCap-main/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/ModbusDaemonService.java
-/home/ur/workspace/Modbus_URCap-main/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/DaemonInstallationNodeView.java
-/home/ur/workspace/Modbus_URCap-main/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/Activator.java
-/home/ur/workspace/Modbus_URCap-main/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/ScriptHandler.java
-/home/ur/workspace/Modbus_URCap-main/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/DaemonInstallationNodeContribution.java
-/home/ur/workspace/Modbus_URCap-main/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/ModbusDaemonInterface.java
-/home/ur/workspace/Modbus_URCap-main/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/ModbusVGP20Gripper.java
-/home/ur/workspace/Modbus_URCap-main/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/UnknownResponseException.java
+/home/fuglsang/ebbe_git/VGP20Modbus/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/ModbusDaemonInterface.java
+/home/fuglsang/ebbe_git/VGP20Modbus/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/ModbusVGP20Gripper.java
+/home/fuglsang/ebbe_git/VGP20Modbus/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/ModbusDaemonService.java
+/home/fuglsang/ebbe_git/VGP20Modbus/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/ToolIOController.java
+/home/fuglsang/ebbe_git/VGP20Modbus/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/UnknownResponseException.java
+/home/fuglsang/ebbe_git/VGP20Modbus/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/Activator.java
+/home/fuglsang/ebbe_git/VGP20Modbus/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/ScriptHandler.java
