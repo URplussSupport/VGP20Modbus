@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< HEAD
 <testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="com.ur.thph.modbus_urcap.impl.AppTest" time="0.142" tests="1" errors="0" skipped="0" failures="0">
+=======
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="com.ur.thph.modbus_urcap.impl.AppTest" time="0.038" tests="1" errors="0" skipped="0" failures="0">
+>>>>>>> 9def77dfcdfb35183c7a555e9fd226973f01b37a
   <properties>
     <property name="sun.desktop" value="gnome"/>
     <property name="awt.toolkit" value="sun.awt.X11.XToolkit"/>
@@ -7,7 +11,11 @@
     <property name="java.specification.version" value="1.8"/>
     <property name="sun.cpu.isalist" value=""/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
+<<<<<<< HEAD
     <property name="java.class.path" value="/home/ur/.m2/repository/org/apache/maven/surefire/surefire-booter/2.22.1/surefire-booter-2.22.1.jar:/home/ur/.m2/repository/org/apache/maven/surefire/surefire-api/2.22.1/surefire-api-2.22.1.jar:/home/ur/.m2/repository/org/apache/maven/surefire/surefire-logger-api/2.22.1/surefire-logger-api-2.22.1.jar:/home/ur/workspace/hackathon Git/VGP20Modbus/com.ur.thph.modbus_urcap/target/test-classes:/home/ur/workspace/hackathon Git/VGP20Modbus/com.ur.thph.modbus_urcap/target/classes:/home/ur/.m2/repository/org/osgi/org.osgi.core/4.3.0/org.osgi.core-4.3.0.jar:/home/ur/.m2/repository/com/ur/urcap/api/1.11.0/api-1.11.0.jar:/home/ur/.m2/repository/org/apache/xmlrpc/xmlrpc-client/3.1.3.0/xmlrpc-client-3.1.3.0.jar:/home/ur/.m2/repository/org/apache/xmlrpc/xmlrpc-common/3.1.3.0/xmlrpc-common-3.1.3.0.jar:/home/ur/.m2/repository/org/apache/ws/commons/util/ws-commons-util/1.0.2.0/ws-commons-util-1.0.2.0.jar:/home/ur/.m2/repository/commons-httpclient/commons-httpclient/3.1.0.0/commons-httpclient-3.1.0.0.jar:/home/ur/.m2/repository/commons-codec/commons-codec/1.9/commons-codec-1.9.jar:/home/ur/.m2/repository/junit/junit/4.12/junit-4.12.jar:/home/ur/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/ur/.m2/repository/org/apache/maven/surefire/surefire-junit4/2.22.1/surefire-junit4-2.22.1.jar"/>
+=======
+    <property name="java.class.path" value="/home/fuglsang/.m2/repository/org/apache/maven/surefire/surefire-booter/2.22.1/surefire-booter-2.22.1.jar:/home/fuglsang/.m2/repository/org/apache/maven/surefire/surefire-api/2.22.1/surefire-api-2.22.1.jar:/home/fuglsang/.m2/repository/org/apache/maven/surefire/surefire-logger-api/2.22.1/surefire-logger-api-2.22.1.jar:/home/fuglsang/ebbe_git/VGP20Modbus/com.ur.thph.modbus_urcap/target/test-classes:/home/fuglsang/ebbe_git/VGP20Modbus/com.ur.thph.modbus_urcap/target/classes:/home/fuglsang/.m2/repository/org/osgi/org.osgi.core/4.3.0/org.osgi.core-4.3.0.jar:/home/fuglsang/.m2/repository/com/ur/urcap/api/1.11.0/api-1.11.0.jar:/home/fuglsang/.m2/repository/org/apache/xmlrpc/xmlrpc-client/3.1.3.0/xmlrpc-client-3.1.3.0.jar:/home/fuglsang/.m2/repository/org/apache/xmlrpc/xmlrpc-common/3.1.3.0/xmlrpc-common-3.1.3.0.jar:/home/fuglsang/.m2/repository/org/apache/ws/commons/util/ws-commons-util/1.0.2.0/ws-commons-util-1.0.2.0.jar:/home/fuglsang/.m2/repository/commons-httpclient/commons-httpclient/3.1.0.0/commons-httpclient-3.1.0.0.jar:/home/fuglsang/.m2/repository/commons-codec/commons-codec/1.9/commons-codec-1.9.jar:/home/fuglsang/.m2/repository/junit/junit/4.12/junit-4.12.jar:/home/fuglsang/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/fuglsang/.m2/repository/org/apache/maven/surefire/surefire-junit4/2.22.1/surefire-junit4-2.22.1.jar"/>
+>>>>>>> 9def77dfcdfb35183c7a555e9fd226973f01b37a
     <property name="java.vm.vendor" value="Private Build"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="java.vendor.url" value="http://java.oracle.com/"/>
@@ -17,14 +25,23 @@
     <property name="user.country" value="US"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.boot.library.path" value="/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64"/>
+<<<<<<< HEAD
     <property name="sun.java.command" value="org.apache.maven.surefire.booter.ForkedBooter /home/ur/workspace/hackathon Git/VGP20Modbus/com.ur.thph.modbus_urcap/target/surefire 2021-04-15T08-25-58_363-jvmRun1 surefire773313984196348720tmp surefire_05028832875699140941tmp"/>
     <property name="surefire.test.class.path" value="/home/ur/workspace/hackathon Git/VGP20Modbus/com.ur.thph.modbus_urcap/target/test-classes:/home/ur/workspace/hackathon Git/VGP20Modbus/com.ur.thph.modbus_urcap/target/classes:/home/ur/.m2/repository/org/osgi/org.osgi.core/4.3.0/org.osgi.core-4.3.0.jar:/home/ur/.m2/repository/com/ur/urcap/api/1.11.0/api-1.11.0.jar:/home/ur/.m2/repository/org/apache/xmlrpc/xmlrpc-client/3.1.3.0/xmlrpc-client-3.1.3.0.jar:/home/ur/.m2/repository/org/apache/xmlrpc/xmlrpc-common/3.1.3.0/xmlrpc-common-3.1.3.0.jar:/home/ur/.m2/repository/org/apache/ws/commons/util/ws-commons-util/1.0.2.0/ws-commons-util-1.0.2.0.jar:/home/ur/.m2/repository/commons-httpclient/commons-httpclient/3.1.0.0/commons-httpclient-3.1.0.0.jar:/home/ur/.m2/repository/commons-codec/commons-codec/1.9/commons-codec-1.9.jar:/home/ur/.m2/repository/junit/junit/4.12/junit-4.12.jar:/home/ur/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:"/>
+=======
+    <property name="sun.java.command" value="org.apache.maven.surefire.booter.ForkedBooter /home/fuglsang/ebbe_git/VGP20Modbus/com.ur.thph.modbus_urcap/target/surefire 2021-04-15T14-51-07_732-jvmRun1 surefire2329572252847840992tmp surefire_04267480335730608537tmp"/>
+    <property name="surefire.test.class.path" value="/home/fuglsang/ebbe_git/VGP20Modbus/com.ur.thph.modbus_urcap/target/test-classes:/home/fuglsang/ebbe_git/VGP20Modbus/com.ur.thph.modbus_urcap/target/classes:/home/fuglsang/.m2/repository/org/osgi/org.osgi.core/4.3.0/org.osgi.core-4.3.0.jar:/home/fuglsang/.m2/repository/com/ur/urcap/api/1.11.0/api-1.11.0.jar:/home/fuglsang/.m2/repository/org/apache/xmlrpc/xmlrpc-client/3.1.3.0/xmlrpc-client-3.1.3.0.jar:/home/fuglsang/.m2/repository/org/apache/xmlrpc/xmlrpc-common/3.1.3.0/xmlrpc-common-3.1.3.0.jar:/home/fuglsang/.m2/repository/org/apache/ws/commons/util/ws-commons-util/1.0.2.0/ws-commons-util-1.0.2.0.jar:/home/fuglsang/.m2/repository/commons-httpclient/commons-httpclient/3.1.0.0/commons-httpclient-3.1.0.0.jar:/home/fuglsang/.m2/repository/commons-codec/commons-codec/1.9/commons-codec-1.9.jar:/home/fuglsang/.m2/repository/junit/junit/4.12/junit-4.12.jar:/home/fuglsang/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:"/>
+>>>>>>> 9def77dfcdfb35183c7a555e9fd226973f01b37a
     <property name="sun.cpu.endian" value="little"/>
-    <property name="user.home" value="/home/ur"/>
+    <property name="user.home" value="/home/fuglsang"/>
     <property name="user.language" value="en"/>
     <property name="java.specification.vendor" value="Oracle Corporation"/>
     <property name="java.home" value="/usr/lib/jvm/java-8-openjdk-amd64/jre"/>
+<<<<<<< HEAD
     <property name="basedir" value="/home/ur/workspace/hackathon Git/VGP20Modbus/com.ur.thph.modbus_urcap"/>
+=======
+    <property name="basedir" value="/home/fuglsang/ebbe_git/VGP20Modbus/com.ur.thph.modbus_urcap"/>
+>>>>>>> 9def77dfcdfb35183c7a555e9fd226973f01b37a
     <property name="file.separator" value="/"/>
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
@@ -32,24 +49,28 @@
     <property name="java.awt.graphicsenv" value="sun.awt.X11GraphicsEnvironment"/>
     <property name="sun.boot.class.path" value="/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/resources.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/rt.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/sunrsasign.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/jsse.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/jce.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/charsets.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/jfr.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/classes"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
-    <property name="java.runtime.version" value="1.8.0_282-8u282-b08-0ubuntu1~16.04-b08"/>
-    <property name="user.name" value="ur"/>
+    <property name="java.runtime.version" value="1.8.0_282-8u282-b08-0ubuntu1~20.04-b08"/>
+    <property name="user.name" value="fuglsang"/>
     <property name="path.separator" value=":"/>
-    <property name="os.version" value="4.15.0-140-generic"/>
+    <property name="os.version" value="5.8.0-48-generic"/>
     <property name="java.endorsed.dirs" value="/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/endorsed"/>
     <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
     <property name="file.encoding" value="UTF-8"/>
     <property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
-    <property name="localRepository" value="/home/ur/.m2/repository"/>
+    <property name="localRepository" value="/home/fuglsang/.m2/repository"/>
     <property name="java.vendor.url.bug" value="http://bugreport.sun.com/bugreport/"/>
     <property name="java.io.tmpdir" value="/tmp"/>
     <property name="java.version" value="1.8.0_282"/>
+<<<<<<< HEAD
     <property name="user.dir" value="/home/ur/workspace/hackathon Git/VGP20Modbus/com.ur.thph.modbus_urcap"/>
+=======
+    <property name="user.dir" value="/home/fuglsang/ebbe_git/VGP20Modbus/com.ur.thph.modbus_urcap"/>
+>>>>>>> 9def77dfcdfb35183c7a555e9fd226973f01b37a
     <property name="os.arch" value="amd64"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
     <property name="java.awt.printerjob" value="sun.print.PSPrinterJob"/>
     <property name="sun.os.patch.level" value="unknown"/>
-    <property name="java.library.path" value="/usr/java/packages/lib/amd64:/usr/lib/x86_64-linux-gnu/jni:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/jni:/lib:/usr/lib"/>
+    <property name="java.library.path" value="/opt/ros/noetic/lib:/usr/java/packages/lib/amd64:/usr/lib/x86_64-linux-gnu/jni:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/jni:/lib:/usr/lib"/>
     <property name="java.vm.info" value="mixed mode"/>
     <property name="java.vendor" value="Private Build"/>
     <property name="java.vm.version" value="25.282-b08"/>
@@ -57,5 +78,9 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="52.0"/>
   </properties>
+<<<<<<< HEAD
   <testcase name="testApp" classname="com.ur.thph.modbus_urcap.impl.AppTest" time="0.004"/>
+=======
+  <testcase name="testApp" classname="com.ur.thph.modbus_urcap.impl.AppTest" time="0.009"/>
+>>>>>>> 9def77dfcdfb35183c7a555e9fd226973f01b37a
 </testsuite>

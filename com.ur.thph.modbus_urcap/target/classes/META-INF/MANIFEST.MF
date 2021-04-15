@@ -1,7 +1,11 @@
 Manifest-Version: 1.0
+<<<<<<< HEAD
 Bnd-LastModified: 1618500360436
+=======
+Bnd-LastModified: 1618491069048
+>>>>>>> 9def77dfcdfb35183c7a555e9fd226973f01b37a
 Build-Jdk: 1.8.0_282
-Built-By: ur
+Built-By: fuglsang
 Bundle-Activator: com.ur.thph.modbus_urcap.impl.Activator
 Bundle-Category: URCap
 Bundle-ContactAddress: 1234 URCap Street

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /home/ur/workspace/hackathon Git/VGP20Modbus/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/ScriptHandler.java
 /home/ur/workspace/hackathon Git/VGP20Modbus/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/Activator.java
 /home/ur/workspace/hackathon Git/VGP20Modbus/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/ModbusVGP20Gripper.java
@@ -5,3 +6,12 @@
 /home/ur/workspace/hackathon Git/VGP20Modbus/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/ModbusDaemonInterface.java
 /home/ur/workspace/hackathon Git/VGP20Modbus/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/UnknownResponseException.java
 /home/ur/workspace/hackathon Git/VGP20Modbus/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/ModbusDaemonService.java
+=======
+/home/fuglsang/ebbe_git/VGP20Modbus/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/ModbusDaemonInterface.java
+/home/fuglsang/ebbe_git/VGP20Modbus/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/ModbusVGP20Gripper.java
+/home/fuglsang/ebbe_git/VGP20Modbus/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/ModbusDaemonService.java
+/home/fuglsang/ebbe_git/VGP20Modbus/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/ToolIOController.java
+/home/fuglsang/ebbe_git/VGP20Modbus/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/UnknownResponseException.java
+/home/fuglsang/ebbe_git/VGP20Modbus/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/Activator.java
+/home/fuglsang/ebbe_git/VGP20Modbus/com.ur.thph.modbus_urcap/src/main/java/com/ur/thph/modbus_urcap/impl/ScriptHandler.java
+>>>>>>> 9def77dfcdfb35183c7a555e9fd226973f01b37a

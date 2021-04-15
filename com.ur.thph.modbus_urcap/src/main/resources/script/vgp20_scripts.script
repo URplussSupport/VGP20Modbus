@@ -1,9 +1,15 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9def77dfcdfb35183c7a555e9fd226973f01b37a
 	#const
 	vgp20_chs = 4
-    chs = vgp20_chs
     valve_activation_current = 0.03
+<<<<<<< HEAD
 	quiescent_current = 0.255 # -including 3 valve activation
+=======
+	quiescent_current = 0.255 - 0.05	#including 3 valve activation
+>>>>>>> 9def77dfcdfb35183c7a555e9fd226973f01b37a
 	headroom_current_list = [0, 	1.1-quiescent_current,  	1.25-quiescent_current,  1.3-quiescent_current,  1.4-quiescent_current, 1.7-quiescent_current,  1.95-quiescent_current, 1.95-quiescent_current]
 	pressure_step_list = 	[0,	6,						10, 					12, 					15, 					20, 					30, 					60]
 
@@ -20,7 +26,39 @@
     vgp20_max_current_window_length = 100
 	#max current thread TODO
 
-
+thread vgp20_current_thread():
+    current_buffer = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    current_buffer_index = 0
+    vgp20_max_current_in_window = 0
+    while True:
+        actual_current = get_tool_current()
+        if actual_current > vgp20_max_current_in_window:
+            vgp20_max_current_in_window = actual_current
+        end
+        #check if we are about to over write max current value
+        if norm(vgp20_max_current_in_window-current_buffer[current_buffer_index]) < 0.001:  
+            #find new max 
+            current_buffer[current_buffer_index] = actual_current #add sample to buffer
+            vgp20_max_current_in_window = 0
+            i=0
+            while i <  vgp20_max_current_window_length:
+                if current_buffer[i]>vgp20_max_current_in_window:
+                    vgp20_max_current_in_window=current_buffer[i]
+				end
+				i=i+1	
+            end
+        end
+        current_buffer[current_buffer_index] = actual_current   #add sample to buffer
+        current_buffer_index = current_buffer_index+1           #increase index
+        if current_buffer_index >= vgp20_max_current_window_length:
+            current_buffer_index = 0                            #wrap index
+		end
+		sync()
+    end    
+end
+run vgp20_current_thread()
+tool_modbus_init(65)
+    
 	#vgp20 power logic functions
 	#internal functions
 	def find_pressure_step(current_headroom):
@@ -46,7 +84,6 @@
 	#thread for updating the hardware in steps
 	vgp20_hw_thr_running=False
 	thread vgp20_hw_update_thr():
-		textmsg("thr started")
 		vgp20_hw_thr_running = True
 		ch = 0
 		while ch < vgp20_chs:	#iterate over channels	
@@ -56,25 +93,19 @@
 		 		vgp20_modbus_activate_ch(ch, vgp20_modbus_target_pressure[ch] + pressure_step)
 		 		vgp20_timeout=0
 				sync()
-				textmsg("wiat for pressure")
 		 		while False == vgp20_grip_detect_ch(ch):
 		 			vgp20_timeout=vgp20_timeout+1
 		 			sync()							#investigate why vgp20_timeout can not be accessed here
 		 			if vgp20_leak_timed_out():
-						textmsg("timeout")
 						break 
 		 			end
 		 		end
-		 		pressure_step = find_pressure_step(current_headroom)
-				textmsg("pressure step: ", pressure_step)
-				textmsg("pressure t mod : ", vgp20_modbus_target_pressure[ch])
-				textmsg("pressure t  : ", vgp20_target_pressure[ch])
+		 		#pressure_step = find_pressure_step(current_headroom)	#if a channel is leaking this is more "safe" but with only single pin power this really slows down the operation
 		 	end
 			vgp20_modbus_activate_ch(ch, vgp20_target_pressure[ch])	#final step
 			ch = ch+1
 		end
 		vgp20_hw_thr_running = False
-		textmsg("thr ended")
 	end
 
 	def vgp20_start_hw_update_thr():
@@ -126,7 +157,7 @@
 	def vgp20_grip(ch_list, target_pressure):
 		i=0
 		return_value = True
-		while i < chs:
+		while i < vgp20_chs:
 			if ch_list[i]:
 				vgp20_active_ch(i, target_pressure)
 			end
@@ -137,7 +168,7 @@
 	def vgp20_release(ch_list):
 		i=0
 		return_value = True
-		while i < chs:
+		while i < vgp20_chs:
 			if ch_list[i]:
 				vgp20_release_ch(i)	
 			end
@@ -149,7 +180,7 @@
 		i=0
 		return_value = True
 		if False == vgp20_hw_thr_running: 
-			while i < chs:
+			while i < vgp20_chs:
 				if ch_list[i]:
 					return_value = (return_value and vgp20_grip_detect_ch(i))
                 end
@@ -165,7 +196,7 @@
 		i=0
 		return_value = True
 		if False == vgp20_hw_thr_running: 	
-			while i < chs:
+			while i < vgp20_chs:
 				if ch_list[i]:
 					return_value = (return_value and vgp20_release_detect_ch(i))
                 end
