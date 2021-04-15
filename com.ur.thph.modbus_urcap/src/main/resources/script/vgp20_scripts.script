@@ -1,0 +1,181 @@
+	#modbus_add_signal RTU 
+	modbus_xmlrpc = rpc_factory("xmlrpc", "http://127.0.0.1:40408/RPC2")
+
+
+	#const
+	vgp20_chs = 4
+    chs = vgp20_chs
+    valve_activation_current = 0.03
+	quiescent_current = 0.255 -	#including 3 valve activation
+	headroom_current_list = [0, 	1.1-quiescent_current,  	1.25-quiescent_current,  1.3-quiescent_current,  1.4-quiescent_current, 1.7-quiescent_current,  1.95-quiescent_current, 1.95-quiescent_current]
+	pressure_step_list = 	[0,	6,						10, 					12, 					15, 					20, 					30, 					60]
+	vgp20_max_tool_current = 2.0
+    vgp20_leak_timeout = 500	#[syncs]
+    
+
+	#variabels
+	vgp20_ch_active = [False, False, False, False]
+	vgp20_target_pressure = [0, 0, 0, 0]
+	vgp20_modbus_target_pressure = [0, 0, 0, 0]
+
+    #temp shall be handle by thread
+    vgp20_max_current_in_window = 0.2
+    vgp20_max_current_window_length = 100
+	#max current thread TODO
+
+
+	#vgp20 power logic functions
+	#internal functions
+	def find_pressure_step(current_headroom):
+		i=0 
+		while i < length(headroom_current_list):
+			if  current_headroom < headroom_current_list[i]:
+				return pressure_step_list[i-1]
+			end
+			i=i+1
+		end
+		return pressure_step_list[length(headroom_current_list)-1]
+	end
+
+	vgp20_timeout = 0
+	def vgp20_leak_timed_out():
+		vgp20_timeout=vgp20_timeout+1
+		if vgp20_timeout > vgp20_leak_timeout:
+			return True
+		end
+		return False
+	end
+
+	#thread for updating the hardware in steps
+	vgp20_hw_thr_running=False
+	thread vgp20_hw_update_thr():
+		textmsg("thr started")
+		vgp20_hw_thr_running = True
+		ch = 0
+		while ch < vgp20_chs:	#iterate over channels	
+		 	current_headroom = vgp20_max_tool_current-vgp20_max_current_in_window
+		 	pressure_step = find_pressure_step(current_headroom)
+		 	while vgp20_target_pressure[ch]-vgp20_modbus_target_pressure[ch] > pressure_step:	
+		 		vgp20_modbus_activate_ch(ch, vgp20_modbus_target_pressure[ch] + pressure_step)
+		 		vgp20_timeout=0
+				sync()
+				textmsg("wiat for pressure")
+		 		while False == vgp20_grip_detect_ch(ch):
+		 			vgp20_timeout=vgp20_timeout+1
+		 			sync()							#investigate why vgp20_timeout can not be accessed here
+		 			if vgp20_leak_timed_out():
+						textmsg("timeout")
+						break 
+		 			end
+		 		end
+		 		pressure_step = find_pressure_step(current_headroom)
+				textmsg("pressure step: ", pressure_step)
+				textmsg("pressure t mod : ", vgp20_modbus_target_pressure[ch])
+				textmsg("pressure t  : ", vgp20_target_pressure[ch])
+		 	end
+			vgp20_modbus_activate_ch(ch, vgp20_target_pressure[ch])	#final step
+			ch = ch+1
+		end
+		vgp20_hw_thr_running = False
+		textmsg("thr ended")
+	end
+
+	def vgp20_start_hw_update_thr():
+		run vgp20_hw_update_thr()
+	end
+
+	#modbus vgp20 functions
+	def vgp20_modbus_activate_ch(ch,target_pressure):
+		tool_modbus_write(ch,target_pressure)
+		vgp20_modbus_target_pressure[ch] = target_pressure
+	end
+
+	def vgp20_modbus_read_pressure_ch(ch):
+		tool_modbus_read(258+ch)
+	end
+
+	#single channel functions
+	def vgp20_active_ch(ch,target_pressure):
+		vgp20_ch_active[ch] = True
+		vgp20_target_pressure[ch] = target_pressure
+		vgp20_start_hw_update_thr()
+	end
+
+	def vgp20_release_ch(ch):
+		vgp20_ch_active[ch] = False
+		vgp20_target_pressure[ch] = 0
+		vgp20_start_hw_update_thr()
+	end
+
+	def vgp20_grip_detect_ch(ch):
+		return_value = False
+		if vgp20_modbus_read_pressure_ch(ch) > vgp20_target_pressure[ch]:
+			return_value = True
+		end
+		return return_value
+	end
+
+	def vgp20_release_detect_ch(ch):
+		return (0 == vgp20_modbus_read_pressure_ch(ch))
+	end
+
+
+	#Interface functions GUI
+	#vgp20_grip(ch_list, target_pressure)
+	#vgp20_release(ch_list)	
+	#vgp20_grip_detect(ch_list)
+	#vgp20_release_detect(ch_list)
+
+	def vgp20_grip(ch_list, target_pressure):
+		i=0
+		return_value = True
+		while i < chs:
+			if ch_list[i]:
+				vgp20_active_ch(i, target_pressure)
+			end
+			i=i+1
+		end
+	end
+
+	def vgp20_release(ch_list):
+		i=0
+		return_value = True
+		while i < chs:
+			if ch_list[i]:
+				vgp20_release_ch(i)	
+			end
+			i=i+1
+		end
+	end
+
+	def vgp20_grip_detect(ch_list):
+		i=0
+		return_value = True
+		if False == vgp20_hw_thr_running: 
+			while i < chs:
+				if ch_list[i]:
+					return_value = (return_value and vgp20_grip_detect_ch(i))
+                end
+                i=i+1
+			end
+		else:
+			return_value = False
+		end
+		return return_value
+	end
+
+	def vgp20_release_detect(ch_list):
+		i=0
+		return_value = True
+		if False == vgp20_hw_thr_running: 	
+			while i < chs:
+				if ch_list[i]:
+					return_value = (return_value and vgp20_release_detect_ch(i))
+                end
+                i=i+1
+			end
+		else:
+			return_value = False
+		end
+		return return_value	
+	end
