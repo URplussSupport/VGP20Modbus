@@ -37,7 +37,7 @@ import java.util.Timer;
 
 public class ModbusVGP20Gripper implements GripperContribution {
 
-	private static final String GRIPPER_TITLE = "Dual Zone Gripper";
+	//private static final String GRIPPER_TITLE = "Dual Zone Gripper";
 
 	private static final String ZONE_A_NAME = "Zone A";
 	private static final String ZONE_B_NAME = "Zone B";
@@ -64,7 +64,9 @@ public class ModbusVGP20Gripper implements GripperContribution {
 	private BooleanUserInput fragileHandlingInput;
 	
 	/*
+	 * ================================================================================================================
 	 * VGP20 - Hackathon Stuff
+	 * ================================================================================================================
 	 */
 	
 	private Timer uiTimer;
@@ -78,8 +80,29 @@ public class ModbusVGP20Gripper implements GripperContribution {
 	private static final String SCRIPT_FILE_PATH_MODBUS = "/script/modbus.script";
 	private static final String SCRIPT_FILE_PATH_VGP20 = "/script/vgp20_scripts.script";
 	
-	private String maximumCurrentToolIO = "0.6";  
+	private static final String CHANNEL_1_ID = "Channel1_Id";
+	private static final String CHANNEL_2_ID = "Channel2_Id";
+	private static final String CHANNEL_3_ID = "Channel3_Id";
+	private static final String CHANNEL_4_ID = "Channel4_Id";
+	private static final String CHANNEL_ALL_ID = "ChannelAll_Id";
 	
+	private static final String CHANNEL_1_NAME = "Channel 1";
+	private static final String CHANNEL_2_NAME = "Channel 2";
+	private static final String CHANNEL_3_NAME = "Channel 3";
+	private static final String CHANNEL_4_NAME = "Channel 4";
+	private static final String CHANNEL_ALL_NAME = "All Channels";
+	
+	private static final String CHANNEL_TCP = "VPG20_TCP";	
+	
+	private static final String GRIPPER_TITLE = "VGP20 Gripper";
+	
+	private SelectableGripper channel1Gripper;
+	private SelectableGripper channel2Gripper;
+	private SelectableGripper channel3Gripper;
+	private SelectableGripper channel4Gripper;
+	private SelectableGripper channelAllGripper;
+	
+	private String maximumCurrentToolIO = "0.6";  
 	
 	private ScriptHandler handler;
 	
@@ -91,8 +114,9 @@ public class ModbusVGP20Gripper implements GripperContribution {
 	private ToolIOController toolIOController ;
 	
 	
+	
 	/*
-	 * 
+	 * ================================================================================================================
 	 */
 	
 
@@ -165,19 +189,21 @@ public class ModbusVGP20Gripper implements GripperContribution {
 
 	@Override
 	public void configureGripper(GripperConfiguration gripperConfiguration, GripperAPIProvider gripperAPIProvider) {
-		/*
-		 * TODO Add the correspondent capabilites to the gripper program node and adjust the needed script code accordingly
-		 */	
+		
 		
 		GripperCapabilities capabilities = gripperConfiguration.getGripperCapabilities();
 		
 		capabilities.registerMultiGripperCapability(new GripperListProvider() {
 			@Override
 			public GripperList getGripperList(GripperListBuilder gripperListBuilder, Locale locale) {
-				zoneAGripper = gripperListBuilder.createGripper(ZONE_A_ID, ZONE_A_NAME, true);
-				zoneBGripper = gripperListBuilder.createGripper(ZONE_B_ID, ZONE_B_NAME, true);
-				zoneABGripper = gripperListBuilder.createGripper(ZONE_AB_ID, ZONE_AB_NAME, true);
-
+				
+				channel1Gripper = gripperListBuilder.createGripper(CHANNEL_1_ID, CHANNEL_1_NAME, true);
+				channel2Gripper = gripperListBuilder.createGripper(CHANNEL_2_ID, CHANNEL_2_NAME, true);
+				channel3Gripper = gripperListBuilder.createGripper(CHANNEL_3_ID, CHANNEL_3_NAME, true);
+				channel4Gripper = gripperListBuilder.createGripper(CHANNEL_4_ID, CHANNEL_4_NAME, true);
+				channelAllGripper = gripperListBuilder.createGripper(CHANNEL_ALL_ID, CHANNEL_ALL_NAME, true);
+			
+				
 				return gripperListBuilder.buildList();
 			}
 		});
@@ -194,10 +220,7 @@ public class ModbusVGP20Gripper implements GripperContribution {
 									  GripperAPIProvider gripperAPIProvider) {
 		configureGripperTCPs(systemConfiguration, gripperAPIProvider);
 		customizeInstallationScreen(configurationUIBuilder);
-		configureToolIOResourceModel(systemConfiguration, gripperAPIProvider);
-		
-		
-		
+		configureToolIOResourceModel(systemConfiguration, gripperAPIProvider);		
 	}
 	
 	private void configureToolIOResourceModel(SystemConfiguration systemConfiguration, GripperAPIProvider gripperAPIProvider ) {
@@ -256,22 +279,11 @@ public class ModbusVGP20Gripper implements GripperContribution {
 	
 	
 	
-	private void configureGripperTCPs(SystemConfiguration systemConfiguration, GripperAPIProvider gripperAPIProvider) {
-		
-		/*
-		 * TODO Adjust TCP Values accordingly
-		 */		
-		
+	private void configureGripperTCPs(SystemConfiguration systemConfiguration, GripperAPIProvider gripperAPIProvider) {		
 		PoseFactory poseFactory = gripperAPIProvider.getPoseFactory();
-
-		TCPConfiguration zoneATCPConfiguration = systemConfiguration.getTCPConfiguration(zoneAGripper);
-		zoneATCPConfiguration.setTCP(ZONE_A_TCP_NAME, poseFactory.createPose(75, 0, 50, 0, 0, 0, Length.Unit.MM, Angle.Unit.DEG));
-
-		TCPConfiguration zoneBTCPConfiguration = systemConfiguration.getTCPConfiguration(zoneBGripper);
-		zoneBTCPConfiguration.setTCP(ZONE_B_TCP_NAME, poseFactory.createPose(-75, 0, 50, 0, 0, 0, Length.Unit.MM, Angle.Unit.DEG));
-
-		TCPConfiguration zoneABTCPConfiguration = systemConfiguration.getTCPConfiguration(zoneABGripper);
-		zoneABTCPConfiguration.setTCP(ZONE_AB_TCP_NAME, poseFactory.createPose(0, 0, 50, 0, 0, 0, Length.Unit.MM, Angle.Unit.DEG));
+		
+		TCPConfiguration zoneATCPConfiguration = systemConfiguration.getTCPConfiguration(channel1Gripper);
+		zoneATCPConfiguration.setTCP(CHANNEL_TCP, poseFactory.createPose(0, 0, 50, 0, 0, 0, Length.Unit.MM, Angle.Unit.DEG));
 	}
 
 	private void customizeInstallationScreen(CustomUserInputConfiguration configurationUIBuilder) {
@@ -318,23 +330,18 @@ public class ModbusVGP20Gripper implements GripperContribution {
 
 	@Override
 	public void generatePreambleScript(ScriptWriter scriptWriter) {
-		/*
-		 * TODO The initialization of the Modbus Communication is missing
-		 */
 		scriptWriter.appendLine("vgp20_max_tool_current = " + getMaxCurrentToolIO()); // The maximum current available is dependent on the used robot size
 		
 		String scriptCode_modbus = this.handler.readScriptFile(SCRIPT_FILE_PATH_MODBUS, scriptWriter);
-		String scriptCode_VGP20 = this.handler.readScriptFile(SCRIPT_FILE_PATH_VGP20, scriptWriter);
-		
-		 
-				
+		String scriptCode_VGP20 = this.handler.readScriptFile(SCRIPT_FILE_PATH_VGP20, scriptWriter);				
 	}
 
 	@Override
 	public void generateGripActionScript(ScriptWriter scriptWriter, GripActionParameters gripActionParameters) {
 		System.out.println("Grip Action :");
+		
 		/*
-		 * TODO Define Gripping Action Script Code
+		 * 
 		 * 
 		 * 
 		printFragileHandlingSelection();
@@ -342,26 +349,38 @@ public class ModbusVGP20Gripper implements GripperContribution {
 			// Simulate applying fragile handling
 			scriptWriter.appendLine("sleep(0.01)");
 		}
-
+		*/
+		
 		SelectableGripper selectedGripper = gripActionParameters.getGripperSelection();
 		printSelectedGripper(selectedGripper);
-
-		if (zoneAGripper.equals(selectedGripper)) {
-			scriptWriter.appendLine("set_tool_digital_out(0, True)");
-		} else if (zoneBGripper.equals(selectedGripper)) {
-			scriptWriter.appendLine("set_tool_digital_out(1, True)");
-		} else if (zoneABGripper.equals(selectedGripper)) {
-			scriptWriter.appendLine("set_tool_digital_out(0, True)");
-			scriptWriter.appendLine("set_tool_digital_out(1, True)");
+		
+		Pressure pressure = gripActionParameters.getVacuum();
+		
+		scriptWriter.appendLine("vgp20TmpPressure = " + pressure.toString());
+		
+		if(channel1Gripper.equals(selectedGripper)) {
+			scriptWriter.appendLine("vgp20TmpChList = [True, False, False, False]");
+		} else if (channel2Gripper.equals(selectedGripper)) {
+			scriptWriter.appendLine("vgp20TmpChList = [False, True, False, False]");
+		} else if (channel3Gripper.equals(selectedGripper)) {
+			scriptWriter.appendLine("vgp20TmpChList = [False, False, True, False]");
+		} else if (channel4Gripper.equals(selectedGripper)) {
+			scriptWriter.appendLine("vgp20TmpChList = [False, False, False, True]");
+		} else if (channelAllGripper.equals(selectedGripper)) {
+			scriptWriter.appendLine("vgp20TmpChList = [True, True, True, True]");
 		}
-		*/
+				
+			
+		scriptWriter.appendLine("vgp20_grip(vgp20TmpChList, vgp20TmpPressure)");
+		
+
 	}
 
 	@Override
 	public void generateReleaseActionScript(ScriptWriter scriptWriter, ReleaseActionParameters releaseActionParameters) {
 		System.out.println("Release Action :");
 		/*
-		 * TODO Define Releasing Action Script Code
+		 * 
 		 * 
 		 * 
 		printFragileHandlingSelection();
@@ -369,19 +388,24 @@ public class ModbusVGP20Gripper implements GripperContribution {
 			// Simulate applying fragile handling
 			scriptWriter.appendLine("sleep(0.01)");
 		}
-
+		*/
 		SelectableGripper selectedGripper = releaseActionParameters.getGripperSelection();
 		printSelectedGripper(selectedGripper);
 
-		if (zoneAGripper.equals(selectedGripper)) {
-			scriptWriter.appendLine("set_tool_digital_out(0, False)");
-		} else if (zoneBGripper.equals(selectedGripper)) {
-			scriptWriter.appendLine("set_tool_digital_out(1, False)");
-		} else if (zoneABGripper.equals(selectedGripper)) {
-			scriptWriter.appendLine("set_tool_digital_out(0, False)");
-			scriptWriter.appendLine("set_tool_digital_out(1, False)");
+		if(channel1Gripper.equals(selectedGripper)) {
+			scriptWriter.appendLine("vgp20TmpChList = [True, False, False, False]");
+		} else if (channel2Gripper.equals(selectedGripper)) {
+			scriptWriter.appendLine("vgp20TmpChList = [False, True, False, False]");
+		} else if (channel3Gripper.equals(selectedGripper)) {
+			scriptWriter.appendLine("vgp20TmpChList = [False, False, True, False]");
+		} else if (channel4Gripper.equals(selectedGripper)) {
+			scriptWriter.appendLine("vgp20TmpChList = [False, False, False, True]");
+		} else if (channelAllGripper.equals(selectedGripper)) {
+			scriptWriter.appendLine("vgp20TmpChList = [True, True, True, True]");
 		}
-		*/
+		
+		scriptWriter.appendLine("vgp20_release(vgp20TmpChList)");
+		
 	}
 
 	private void printSelectedGripper(SelectableGripper selectedGripper) {
