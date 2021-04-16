@@ -39,26 +39,16 @@ public class ModbusVGP20Gripper implements GripperContribution {
 
 	//private static final String GRIPPER_TITLE = "Dual Zone Gripper";
 
-	private static final String ZONE_A_NAME = "Zone A";
-	private static final String ZONE_B_NAME = "Zone B";
-	private static final String ZONE_AB_NAME = "Zone A+B";
-
-	private static final String ZONE_A_TCP_NAME = "Zone_A";
-	private static final String ZONE_B_TCP_NAME = "Zone_B";
-	private static final String ZONE_AB_TCP_NAME = "Zone_AB";
+;
 
 	// Ids must remain constant over time and versions of the Gripper URCap, since they are used for persistence and
 	// can be used by other URCaps for configuring Gripper program nodes.
-	private static final String ZONE_A_ID = "ZoneA_id";
-	private static final String ZONE_B_ID = "ZoneB_id";
-	private static final String ZONE_AB_ID = "ZoneAB_id";
+	
 
 	private static final String FRAGILE_HANDLING_LABEL = "Use Fragile Handling";
 	private static final String FRAGILE_HANDLING_ID = "fragile_handling_id";
 
-	private SelectableGripper zoneAGripper;
-	private SelectableGripper zoneBGripper;
-	private SelectableGripper zoneABGripper;
+	
 	private GripVacuumCapability gripVacuumCapability;
 
 	private BooleanUserInput fragileHandlingInput;
@@ -94,7 +84,7 @@ public class ModbusVGP20Gripper implements GripperContribution {
 	
 	private static final String CHANNEL_TCP = "VPG20_TCP";	
 	
-	private static final String GRIPPER_TITLE = "VGP20 Gripper";
+	private static final String GRIPPER_TITLE = "V";
 	
 	private SelectableGripper channel1Gripper;
 	private SelectableGripper channel2Gripper;
@@ -209,6 +199,7 @@ public class ModbusVGP20Gripper implements GripperContribution {
 		});
 
 		gripVacuumCapability = capabilities.registerGrippingVacuumCapability(0, 100, 70, Pressure.Unit.KPA);
+	
 		
 		
 	}
@@ -322,9 +313,9 @@ public class ModbusVGP20Gripper implements GripperContribution {
 	// This method updates the parameters of the registered vacuum capability for all individual grippers
 	private void updateVacuumCapability(boolean useFragileHandling) {
 		if (useFragileHandling) {
-			gripVacuumCapability.updateCapability(0, 70, 40, Pressure.Unit.KPA);
+			gripVacuumCapability.updateCapability(0, 40, 30, Pressure.Unit.KPA);
 		} else {
-			gripVacuumCapability.updateCapability(0, 100, 70, Pressure.Unit.KPA);
+			gripVacuumCapability.updateCapability(0, 60, 50, Pressure.Unit.KPA);
 		}
 	}
 
@@ -356,7 +347,7 @@ public class ModbusVGP20Gripper implements GripperContribution {
 		
 		Pressure pressure = gripActionParameters.getVacuum();
 		
-		scriptWriter.appendLine("vgp20TmpPressure = " + pressure.toString());
+		scriptWriter.appendLine("vgp20TmpPressure = " + pressure.getAs(Pressure.Unit.KPA));
 		
 		if(channel1Gripper.equals(selectedGripper)) {
 			scriptWriter.appendLine("vgp20TmpChList = [True, False, False, False]");
@@ -371,7 +362,7 @@ public class ModbusVGP20Gripper implements GripperContribution {
 		}
 				
 			
-		scriptWriter.appendLine("vgp20_grip(vgp20TmpChList, vgp20TmpPressure)");
+		scriptWriter.appendLine("vgp20_grip(vgp20TmpChList, vgp20TmpPressure  )");
 		
 
 	}
