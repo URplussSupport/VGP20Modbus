@@ -1,8 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.ur.thph.modbus_urcap.impl.AppTest
--------------------------------------------------------------------------------
-<<<<<<< HEAD
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.142 s - in com.ur.thph.modbus_urcap.impl.AppTest
-=======
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.038 s - in com.ur.thph.modbus_urcap.impl.AppTest
->>>>>>> 9def77dfcdfb35183c7a555e9fd226973f01b37a
