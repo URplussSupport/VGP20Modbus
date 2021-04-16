@@ -26,7 +26,7 @@
 		<!--********************************************************************-->
 
 		<!-- Host, username and password of the robot to be used when running "mvn install -Premote" -->
-		<urcap.install.host>localhost</urcap.install.host>
+		<urcap.install.host>192.168.1.105</urcap.install.host>
 		<urcap.install.username>root</urcap.install.username>
 		<urcap.install.password>easybot</urcap.install.password>
 

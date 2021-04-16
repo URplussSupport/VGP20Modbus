@@ -1,19 +1,12 @@
-<<<<<<< HEAD
 
-=======
->>>>>>> 9def77dfcdfb35183c7a555e9fd226973f01b37a
 	#const
 	vgp20_chs = 4
     valve_activation_current = 0.03
-<<<<<<< HEAD
-	quiescent_current = 0.255 # -including 3 valve activation
-=======
-	quiescent_current = 0.255 - 0.05	#including 3 valve activation
->>>>>>> 9def77dfcdfb35183c7a555e9fd226973f01b37a
-	headroom_current_list = [0, 	1.1-quiescent_current,  	1.25-quiescent_current,  1.3-quiescent_current,  1.4-quiescent_current, 1.7-quiescent_current,  1.95-quiescent_current, 1.95-quiescent_current]
+	quiescent_current = 0.255 - valve_activation_current	#including 3 valve activation
+	headroom_current_list = [-3, 	1.1-quiescent_current,  	1.25-quiescent_current,  1.3-quiescent_current,  1.4-quiescent_current, 1.7-quiescent_current,  1.95-quiescent_current, 1.95-quiescent_current]
 	pressure_step_list = 	[0,	6,						10, 					12, 					15, 					20, 					30, 					60]
 
-    vgp20_leak_timeout = 500	#[syncs]
+    vgp20_leak_timeout = 1500	#[syncs]
     
 
 	#variabels
@@ -88,21 +81,34 @@ tool_modbus_init(65)
 		ch = 0
 		while ch < vgp20_chs:	#iterate over channels	
 		 	current_headroom = vgp20_max_tool_current-vgp20_max_current_in_window
-		 	pressure_step = find_pressure_step(current_headroom)
-		 	while vgp20_target_pressure[ch]-vgp20_modbus_target_pressure[ch] > pressure_step:	
+			pressure_step = find_pressure_step(current_headroom)
+			leaking = False
+			while (vgp20_target_pressure[ch]-vgp20_modbus_target_pressure[ch] > pressure_step) and (leaking==False):	
 		 		vgp20_modbus_activate_ch(ch, vgp20_modbus_target_pressure[ch] + pressure_step)
 		 		vgp20_timeout=0
-				sync()
-		 		while False == vgp20_grip_detect_ch(ch):
+		 		while vgp20_modbus_read_pressure_ch(ch) < vgp20_modbus_target_pressure[ch]:
 		 			vgp20_timeout=vgp20_timeout+1
 		 			sync()							#investigate why vgp20_timeout can not be accessed here
-		 			if vgp20_leak_timed_out():
+					 if vgp20_leak_timed_out():
+						leaking = True
 						break 
 		 			end
 		 		end
-		 		#pressure_step = find_pressure_step(current_headroom)	#if a channel is leaking this is more "safe" but with only single pin power this really slows down the operation
-		 	end
-			vgp20_modbus_activate_ch(ch, vgp20_target_pressure[ch])	#final step
+				if 0 == pressure_step:
+					pressure_step = find_pressure_step(vgp20_max_tool_current-vgp20_max_current_in_window)	#if a channel is leaking this is more "safe" but with only single pin power this really slows down the operation
+				end
+			end
+			if  vgp20_target_pressure[ch] != vgp20_modbus_target_pressure[ch]:
+				vgp20_modbus_activate_ch(ch, vgp20_target_pressure[ch])	#final step
+				vgp20_timeout=0
+				while vgp20_modbus_read_pressure_ch(ch) < vgp20_target_pressure[ch]:
+					vgp20_timeout=vgp20_timeout+1
+					sync()							#investigate why vgp20_timeout can not be accessed here
+					if vgp20_leak_timed_out():
+						break 
+					end
+				end
+			end			
 			ch = ch+1
 		end
 		vgp20_hw_thr_running = False
@@ -119,32 +125,30 @@ tool_modbus_init(65)
 	end
 
 	def vgp20_modbus_read_pressure_ch(ch):
-		tool_modbus_read(258+ch)
+		return tool_modbus_read(258+ch)
 	end
 
 	#single channel functions
-	def vgp20_active_ch(ch,target_pressure):
+	def vgp20_request_active_ch(ch,target_pressure):
 		vgp20_ch_active[ch] = True
-		vgp20_target_pressure[ch] = target_pressure
-		vgp20_start_hw_update_thr()
+		vgp20_target_pressure[ch] = target_pressure		
 	end
 
-	def vgp20_release_ch(ch):
+	def vgp20_request_release_ch(ch):
 		vgp20_ch_active[ch] = False
 		vgp20_target_pressure[ch] = 0
-		vgp20_start_hw_update_thr()
 	end
 
 	def vgp20_grip_detect_ch(ch):
 		return_value = False
-		if vgp20_modbus_read_pressure_ch(ch) > vgp20_target_pressure[ch]:
+		if vgp20_modbus_read_pressure_ch(ch) >= vgp20_target_pressure[ch]:
 			return_value = True
 		end
 		return return_value
 	end
 
 	def vgp20_release_detect_ch(ch):
-		return (0 == vgp20_modbus_read_pressure_ch(ch))
+		return (0 >= vgp20_modbus_read_pressure_ch(ch))
 	end
 
 
@@ -159,10 +163,11 @@ tool_modbus_init(65)
 		return_value = True
 		while i < vgp20_chs:
 			if ch_list[i]:
-				vgp20_active_ch(i, target_pressure)
+				vgp20_request_active_ch(i, target_pressure)
 			end
 			i=i+1
 		end
+		vgp20_start_hw_update_thr()
 	end
 
 	def vgp20_release(ch_list):
@@ -170,10 +175,11 @@ tool_modbus_init(65)
 		return_value = True
 		while i < vgp20_chs:
 			if ch_list[i]:
-				vgp20_release_ch(i)	
+				vgp20_request_release_ch(i)	
 			end
 			i=i+1
 		end
+		vgp20_start_hw_update_thr()
 	end
 
 	def vgp20_grip_detect(ch_list):
@@ -183,7 +189,7 @@ tool_modbus_init(65)
 			while i < vgp20_chs:
 				if ch_list[i]:
 					return_value = (return_value and vgp20_grip_detect_ch(i))
-                end
+				end
                 i=i+1
 			end
 		else:
