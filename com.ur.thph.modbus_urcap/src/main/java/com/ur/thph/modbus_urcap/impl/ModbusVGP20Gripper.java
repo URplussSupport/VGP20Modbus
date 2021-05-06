@@ -307,13 +307,8 @@ public class ModbusVGP20Gripper implements GripperContribution {
 		generalTCPConfig.setTCP(CHANNEL_TCP, poseFactory.createPose(0, 0, 50, 0, 0, 0, Length.Unit.MM, Angle.Unit.DEG));
 	}
 
-	private void customizeInstallationScreen(CustomUserInputConfiguration configurationUIBuilder) {
-		
-		
-		
+	private void customizeInstallationScreen(CustomUserInputConfiguration configurationUIBuilder) {		
 		daemonStatusUI = configurationUIBuilder.addText("The Daemon is ",   getDaemonState() +" Perfect!"); 
-		
-
 		toolIOControlStatus = configurationUIBuilder.addText("Tool Control Status:", getToolStatusIcon(), toolControlStatusText());
 		uiTimer = new Timer(true);
 		uiTimer.schedule(new TimerTask() {
@@ -361,21 +356,15 @@ public class ModbusVGP20Gripper implements GripperContribution {
 	@Override
 	public void generateGripActionScript(ScriptWriter scriptWriter, GripActionParameters gripActionParameters) {
 		System.out.println("Grip Action :");
-		
-	
+			
 		
 		SelectableGripper selectedGripper = gripActionParameters.getGripperSelection();
 		printSelectedGripper(selectedGripper);
 		
 		Pressure pressure = gripActionParameters.getVacuum();
 		
-		scriptWriter.appendLine("vgp20TmpPressure = " + pressure.getAs(Pressure.Unit.KPA));
-		
-				
-			
-		scriptWriter.appendLine("vgp20_grip(" + getChannelListForScript( selectedGripper ) + ", vgp20TmpPressure  )");
-		
-
+		scriptWriter.appendLine("vgp20TmpPressure = " + pressure.getAs(Pressure.Unit.KPA));			
+		scriptWriter.appendLine("vgp20_grip(" + getChannelListForScript( selectedGripper ) + ", vgp20TmpPressure  )");	
 	}
 
 	@Override
@@ -383,8 +372,7 @@ public class ModbusVGP20Gripper implements GripperContribution {
 		System.out.println("Release Action :");
 	
 		SelectableGripper selectedGripper = releaseActionParameters.getGripperSelection();
-		scriptWriter.appendLine("vgp20_release(" + getChannelListForScript( selectedGripper ) + " )");
-		
+		scriptWriter.appendLine("vgp20_release(" + getChannelListForScript( selectedGripper ) + " )");		
 	}
 	
 	private String getChannelListForScript( SelectableGripper selectedGripper ) {
