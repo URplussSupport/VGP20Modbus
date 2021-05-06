@@ -12,7 +12,8 @@
 	#variabels
 	vgp20_ch_active = [False, False, False, False]
 	vgp20_target_pressure = [0, 0, 0, 0]
-	vgp20_modbus_target_pressure = [-1, -1, -1, -1]
+  vgp20_modbus_target_pressure = [-1, -1, -1, -1]
+  vgp20_leaking = False
 
     #temp shall be handle by thread
     vgp20_max_current_in_window = 0.2
@@ -79,18 +80,18 @@ tool_modbus_init(65)
 	thread vgp20_hw_update_thr():
 		vgp20_hw_thr_running = True
     ch = 0
-    leaking = False
+    vgp20_leaking = False
 		while ch < vgp20_chs:	#iterate over channels	
 		 	current_headroom = vgp20_max_tool_current-vgp20_max_current_in_window
 			pressure_step = find_pressure_step(current_headroom)
-			while (vgp20_target_pressure[ch]-vgp20_modbus_target_pressure[ch] > pressure_step) and (leaking==False):	
+			while (vgp20_target_pressure[ch]-vgp20_modbus_target_pressure[ch] > pressure_step) and (vgp20_leaking==False):	
 		 		vgp20_modbus_activate_ch(ch, vgp20_modbus_target_pressure[ch] + pressure_step)
 		 		vgp20_timeout=0
 		 		while vgp20_modbus_read_pressure_ch(ch) < vgp20_modbus_target_pressure[ch]:
 		 			vgp20_timeout=vgp20_timeout+1
 		 			sync()							#investigate why vgp20_timeout can not be accessed here
 					 if vgp20_leak_timed_out():
-						leaking = True
+						vgp20_leaking = True
 						break 
 		 			end
 		 		end
@@ -98,7 +99,7 @@ tool_modbus_init(65)
 					pressure_step = find_pressure_step(vgp20_max_tool_current-vgp20_max_current_in_window)	#if a channel is leaking this is more "safe" but with only single pin power this really slows down the operation
 				end
 			end
-			if  vgp20_target_pressure[ch] != vgp20_modbus_target_pressure[ch] and (leaking==False):
+			if  vgp20_target_pressure[ch] != vgp20_modbus_target_pressure[ch] and (vgp20_leaking==False):
 				vgp20_modbus_activate_ch(ch, vgp20_target_pressure[ch])	#final step
 				vgp20_timeout=0
 				while vgp20_modbus_read_pressure_ch(ch) < vgp20_target_pressure[ch]:
@@ -179,7 +180,7 @@ tool_modbus_init(65)
 			i=i+1
 		end
     vgp20_start_hw_update_thr()
-    while (not vgp20_modbus_up_to_date(ch_list)) and (not leaking):
+    while (not vgp20_modbus_up_to_date(ch_list)) and (not vgp20_leaking):
       sync()
     end
 	end
